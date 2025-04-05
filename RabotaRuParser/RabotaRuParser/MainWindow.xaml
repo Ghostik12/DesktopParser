@@ -1,0 +1,245 @@
+﻿<Window x:Class="RabotaRuParser.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RabotaRuParser"
+        Title="Парсер вакансий" WindowState="Maximized">
+    <Grid Background="#F5F5F5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Панель с кнопками -->
+            <RowDefinition Height="Auto"/>
+            <!-- Панель с фильтрами и пагинацией -->
+            <RowDefinition Height="*"/>
+            <!-- Таблица и лог -->
+        </Grid.RowDefinitions>
+
+        <!-- Панель инструментов (шапка) -->
+        <Border Grid.Row="0" Background="#E0E0E0" Padding="10" BorderThickness="0,0,0,1" BorderBrush="#CCCCCC">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                    <Label Content="Вакансия:" VerticalAlignment="Center" FontSize="21"/>
+                    <TextBox x:Name="VacancyTitleTextBox" Width="150" Height="35" Margin="5,0" FontSize="21" TextAlignment="Center" VerticalContentAlignment="Center" TextChanged="VacancyTitleTextBox_TextChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                    <Label Content="Город:" VerticalAlignment="Center" FontSize="21"/>
+                    <ComboBox x:Name="CityComboBox" Width="150" Height="35" Margin="5,0" FontSize="21" VerticalContentAlignment="Center" SelectionChanged="CityComboBox_SelectionChanged">
+                        <ComboBoxItem Content="Москва"/>
+                        <ComboBoxItem Content="Санкт-Петербург"/>
+                        <ComboBoxItem Content="Нижний Новгород"/>
+                        <ComboBoxItem Content="Екатеринбург"/>
+                        <ComboBoxItem Content="Казань"/>
+                        <ComboBoxItem Content="Новосибирск"/>
+                        <ComboBoxItem Content="Самара"/>
+                        <ComboBoxItem Content="Ростов-на-Дону"/>
+                        <ComboBoxItem Content="Краснодар"/>
+                        <ComboBoxItem Content="Челябинск"/>
+                        <ComboBoxItem Content="Абакан"/>
+                        <ComboBoxItem Content="Анадырь"/>
+                        <ComboBoxItem Content="Архангельск"/>
+                        <ComboBoxItem Content="Астрахань"/>
+                        <ComboBoxItem Content="Барнаул"/>
+                        <ComboBoxItem Content="Белгород"/>
+                        <ComboBoxItem Content="Биробиджан"/>
+                        <ComboBoxItem Content="Брянск"/>
+                        <ComboBoxItem Content="Великий Новгород"/>
+                        <ComboBoxItem Content="Владивосток"/>
+                        <ComboBoxItem Content="Владикавказ"/>
+                        <ComboBoxItem Content="Владимир"/>
+                        <ComboBoxItem Content="Волгоград"/>
+                        <ComboBoxItem Content="Воронеж"/>
+                        <ComboBoxItem Content="Грозный"/>
+                        <ComboBoxItem Content="Иваново"/>
+                        <ComboBoxItem Content="Ижевск"/>
+                        <ComboBoxItem Content="Иркутск"/>
+                        <ComboBoxItem Content="Йошкар-Ола"/>
+                        <ComboBoxItem Content="Калининград"/>
+                        <ComboBoxItem Content="Калуга"/>
+                        <ComboBoxItem Content="Кемерово"/>
+                        <ComboBoxItem Content="Киров"/>
+                        <ComboBoxItem Content="Королев"/>
+                        <ComboBoxItem Content="Кострома"/>
+                        <ComboBoxItem Content="Краснодар"/>
+                        <ComboBoxItem Content="Красноярск"/>
+                        <ComboBoxItem Content="Курган"/>
+                        <ComboBoxItem Content="Курск"/>
+                        <ComboBoxItem Content="Кызыл"/>
+                        <ComboBoxItem Content="Липецк"/>
+                        <ComboBoxItem Content="Магадан"/>
+                        <ComboBoxItem Content="Магнитогорск"/>
+                        <ComboBoxItem Content="Махачкала"/>
+                        <ComboBoxItem Content="Омск"/>
+                        <ComboBoxItem Content="Пермь"/>
+                        <ComboBoxItem Content="Ростов-на-Дону"/>
+                    </ComboBox>
+                </StackPanel>
+                <Button x:Name="startButton" Content="Запуск парсера" Width="170" Height="35" Margin="5,0" 
+                        Click="StartButton_Click" IsEnabled="False" Background="#4CAF50" Foreground="White" BorderBrush="{x:Null}" FontSize="21"/>
+                <Button x:Name="stopButton" Content="Стоп" Width="120" Height="35" Margin="5,0" 
+                        Click="StopButton_Click" IsEnabled="False" Background="#F44336" Foreground="White" BorderBrush="{x:Null}" FontSize="21"/>
+                <Button x:Name="exportButton" Content="Экспорт XLSX" Width="140" Height="35" Margin="5,0" 
+                        Click="ExportButton_Click" Background="#2196F3" Foreground="White" BorderBrush="{x:Null}" FontSize="21"/>
+                <Button x:Name="loadBlacklistButton" Content="Загрузить чёрный список" 
+        Width="180" Margin="5,0" FontSize="21" Click="LoadBlacklistButton_Click"/>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,0">
+                    <!-- Чекбокс ротации -->
+                    <CheckBox x:Name="vpnRotateAllCheckBox" Content="Ротация VPN" 
+              Margin="5,0" FontSize="21" VerticalAlignment="Center"
+              Checked="VpnRotateCheckBox_Changed" Unchecked="VpnRotateCheckBox_Changed"/>
+
+                    <!-- Чекбокс выбора страны -->
+                    <CheckBox x:Name="vpnSelectCountryCheckBox" Content="Страна:" 
+              Margin="5,0" FontSize="21" VerticalAlignment="Center"
+              Checked="VpnCountryCheckBox_Changed" Unchecked="VpnCountryCheckBox_Changed"/>
+
+                    <!-- Комбобокс стран -->
+                    <ComboBox x:Name="vpnCountryComboBox" Width="150" Margin="5,0" 
+              FontSize="21" VerticalContentAlignment="Center" IsEnabled="False">
+                        <ComboBoxItem Content="США" Tag="US"/>
+                        <ComboBoxItem Content="Нидерланды" Tag="NL"/>
+                        <ComboBoxItem Content="Япония" Tag="JP"/>
+                    </ComboBox>
+
+                    <!-- Кнопка теста -->
+                    <Button x:Name="testVpnButton" Content="Тест VPN" Width="120" Margin="5,0"
+            FontSize="21" Click="TestVpnButton_Click" IsEnabled="False"/>
+                </StackPanel>
+                <CheckBox x:Name="autoParseCheckBox" Content="Авто" VerticalAlignment="Bottom" Margin="10,0" FontSize="21" VerticalContentAlignment="Center"/>
+                <TextBox x:Name="parseTimeTextBox" Width="120" Height="35" Margin="5,0"
+                         IsEnabled="True" ToolTip="Формат: ЧЧ:ММ,ЧЧ:ММ (например, 14:00,23:00)" FontSize="21" VerticalContentAlignment="Center" TextChanged="ParseTimeTextBox_TextChanged"/>
+                <CheckBox x:Name="OnlyWithPhonesCheckBox" Content="Только с телефонами" Margin="5,0" VerticalAlignment="Bottom" FontSize="21" VerticalContentAlignment="Center" Checked="OnlyWithPhonesCheckBox_Checked" Unchecked="OnlyWithPhonesCheckBox_Unchecked"/>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="10,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Панель фильтров и пагинации -->
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <Label Content="Дата от:" VerticalAlignment="Center" FontSize="21"/>
+                <DatePicker x:Name="dateFromPicker" Width="120" Margin="5,0" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
+                <Label Content="Дата до:" VerticalAlignment="Center" FontSize="21"/>
+                <DatePicker x:Name="dateToPicker" Width="120" Margin="5,0" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
+                <Label Content="Записей:" VerticalAlignment="Center"/>
+                <Label x:Name="recordsCountLabel" Content="0" VerticalAlignment="Center"/>
+                <Button Content="В начало" Width="80" Margin="5,0" Click="FirstPage_Click"/>
+                <Button Content="Назад" Width="80" Margin="5,0" Click="PreviousPage_Click"/>
+                <TextBox x:Name="currentPageTextBox" Width="40" Margin="5,0" Text="1" TextAlignment="Center" VerticalContentAlignment="Center" KeyDown="CurrentPageTextBox_KeyDown" PreviewTextInput="CurrentPageTextBox_PreviewTextInput" />
+                <Label x:Name="totalPagesLabel" Content="из 1" VerticalAlignment="Center"/>
+                <Button Content="Вперёд" Width="80" Margin="5,0" Click="NextPage_Click"/>
+                <Button Content="В конец" Width="80" Margin="5,0" Click="LastPage_Click"/>
+                <ComboBox x:Name="pageSizeComboBox" Width="60" Margin="5,0" SelectedIndex="1" VerticalContentAlignment="Center" SelectionChanged="PageSizeComboBox_SelectionChanged">
+                    <ComboBoxItem Content="50"/>
+                    <ComboBoxItem Content="100"/>
+                    <ComboBoxItem Content="200"/>
+                </ComboBox>
+                <Label Content="Ожидание (сек):" VerticalAlignment="Center" Margin="10,0" FontSize="21"/>
+                <TextBox x:Name="waitTimeTextBox" Width="40" Margin="5,0" FontSize="21" TextAlignment="Center" VerticalContentAlignment="Center" TextChanged="WaitTimeTextBox_TextChanged"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Основная область -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Таблица -->
+            <DataGrid x:Name="dataGrid" Grid.Column="0" Margin="10" AutoGenerateColumns="False" IsReadOnly="True"
+          CanUserSortColumns="True" CanUserResizeColumns="True" CanUserReorderColumns="True"
+          Background="White" BorderBrush="#CCCCCC" BorderThickness="1" Sorting="DataGrid_Sorting">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="FontSize" Value="18"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="№п/п" Binding="{Binding RowNumber}" Width="50">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="21"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Дата парсинга" Binding="{Binding ParseDate, StringFormat=dd.MM.yyyy}" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="21"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Дата на сайте" Binding="{Binding Date, StringFormat=dd.MM.yyyy}" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="21"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="ID на сайте" Binding="{Binding SiteId}" Width="80">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="18"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Ссылка" Binding="{Binding Link}" Width="150">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="11"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Название сайта" Binding="{Binding Domain}" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="18"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="18"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Вакансия" Binding="{Binding Title}" Width="150">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="18"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="150">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="15"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Компания" Binding="{Binding Company}" Width="150">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="15"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="ФИО" Binding="{Binding ContactName}" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="15"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Лог -->
+            <GroupBox Grid.Column="1" Header="Лог" Margin="10" Background="White" BorderBrush="#CCCCCC">
+                <TextBox x:Name="logTextBox" IsReadOnly="True" VerticalScrollBarVisibility="Visible" 
+                         AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0"/>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>
